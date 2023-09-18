@@ -1,4 +1,4 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
 
 import org.json.JSONArray;
 
@@ -31,9 +31,10 @@ public interface IRepository<T> {
 
     String getFiledValue(String fieldName, String sql);
 
-    public String getSpecificFiledValue(String fieldName, String fieldValue);
+    String getSpecificFiledValue(String fieldName, String fieldValue);
 
-    public int getCountAgainstField(String fieldName, String fieldValue);
+    int getCountAgainstField(String fieldName, String fieldValue);
+
     void executeQuery(String sql);
 
     String getRecordCount(String tableName);

@@ -1,13 +1,11 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
 
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
-import com.amitshekhar.DebugDB;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -19,7 +17,7 @@ public class HomeActivity extends AppCompatActivity {
         new DatabaseHandler(this);
 
         // get db log browser address
-        Log.i("duti", "DB Browser: " + DebugDB.getAddressLog());
+        //Log.i("duti", "DB Browser: " + DebugDB.getAddressLog());
 
     }
 

@@ -39,7 +39,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/black_border"
                     android:ems="14"
-                    android:hint="User Id"
+                    android:hint="@string/user_id"
                     android:inputType="number"
                     android:maxLines="1"
                     android:padding="8dp"
@@ -54,7 +54,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/black_border"
                     android:ems="14"
-                    android:hint="Username"
+                    android:hint="@string/username"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="8dp"
@@ -69,7 +69,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/black_border"
                     android:ems="14"
-                    android:hint="User Address"
+                    android:hint="@string/user_address"
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="8dp"
@@ -82,24 +82,24 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/fingerPrintBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
                         android:layout_weight="1"
                         android:onClick="createFingerPrint"
-                        android:text="Finger Print"
+                        android:text="@string/finger_print"
                         android:textSize="16sp" />
 
-                    <android.support.v7.widget.AppCompatButton
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/addUserBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="16dp"
                         android:layout_weight="1"
                         android:onClick="addUser"
-                        android:text="Add User"
+                        android:text="@string/add_user"
                         android:textSize="16sp" />
 
                 </LinearLayout>

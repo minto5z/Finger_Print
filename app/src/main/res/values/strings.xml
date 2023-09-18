@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">SCI - টিপ সই</string>
+    <string name="app_name">Fingerprint - আঙুলের ছাপ</string>
     <string name="user_registration">টিপ সই নিবন্ধন</string>
     <string name="user_verification">টিপ সই সনাক্তকরণ</string>
+    <string name="add_user">Add User</string>
+    <string name="finger_print">Finger Print</string>
+    <string name="user_address">User Address</string>
+    <string name="username">Username</string>
+    <string name="user_id">User Id</string>
 </resources>

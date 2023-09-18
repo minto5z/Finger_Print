@@ -1,4 +1,4 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
 
 
 import java.util.Arrays;

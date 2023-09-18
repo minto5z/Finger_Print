@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FingerPrintDemo.iml" filepath="$PROJECT_DIR$/FingerPrintDemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FingerPrintDemo.iml" filepath="$PROJECT_DIR$/.idea/FingerPrintDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FingerPrintDemo.app.unitTest.iml" />
     </modules>
   </component>
 </project>

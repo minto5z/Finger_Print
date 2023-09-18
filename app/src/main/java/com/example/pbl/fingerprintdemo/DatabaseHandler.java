@@ -1,8 +1,8 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
+
+import static com.example.pbl.fingerprintdemo.Constant.mRecordId;
 
 import android.content.Context;
-
-import static com.example.duti.fingerprintdemo.Constant.mRecordId;
 
 
 public class DatabaseHandler {

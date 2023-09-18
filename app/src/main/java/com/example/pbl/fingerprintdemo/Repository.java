@@ -1,4 +1,7 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
+
+import static com.example.pbl.fingerprintdemo.Constant.DATABASE_VERSION;
+import static com.example.pbl.fingerprintdemo.Constant.DB_NAME;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,27 +22,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.example.duti.fingerprintdemo.Constant.DATABASE_VERSION;
-import static com.example.duti.fingerprintdemo.Constant.DB_NAME;
-
 /**
  * Created by Imrose on 9/22/2017.
  */
 
 public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
 
-    T object;
     public String mTableName = "";
-    private String primaryKeyField = "";
+    T object;
     String mPKField = "";
     List<String> excludeFields = new ArrayList<>();
     HashMap<String, String> tableMap = new HashMap<>();
+    private String primaryKeyField = "";
 
     public Repository(Context context, T object) {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.object = object;
 
-        mTableName = object.getClass().getName().toString().replace(object.getClass()
+        mTableName = object.getClass().getName().replace(object.getClass()
                 .getPackage().toString().replace("package ", ""), "").replace(".", "");
     }
 
@@ -100,7 +100,7 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
             }
         }
         String finalStatement = "CREATE TABLE IF NOT EXISTS " + mTableName + "(" + sql.substring(0, sql.length() - 2) + ")";
-        Log.i("duti", "Table Statement: "+finalStatement);
+        Log.i("duti", "Table Statement: " + finalStatement);
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(finalStatement);
         db.close();
@@ -160,14 +160,14 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
             field.setAccessible(true); // if you want to modify private fields
 
             try {
-                if (!field.getName().toString().equalsIgnoreCase(mPKField)) {
-                    String fieldName = field.getName().toString();
+                if (!field.getName().equalsIgnoreCase(mPKField)) {
+                    String fieldName = field.getName();
                     if (fieldName.equalsIgnoreCase("$change")) {
                     } else if (fieldName.equalsIgnoreCase("serialVersionUID")) {
                     } else if (excludeFields.contains(fieldName)) {
                     } else {
-                        if (!field.getName().toString().equals(primaryKeyField))
-                            values.put(field.getName().toString(), field.get(item) != null ? field.get(item).toString() : "");
+                        if (!field.getName().equals(primaryKeyField))
+                            values.put(field.getName(), field.get(item) != null ? field.get(item).toString() : "");
                     }
                 }
             } catch (IllegalAccessException e) {
@@ -202,12 +202,12 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
             field.setAccessible(true); // if you want to modify private fields
 
             try {
-                String fieldName = field.getName().toString();
+                String fieldName = field.getName();
                 if (fieldName.equalsIgnoreCase("$change")) {
                 } else if (fieldName.equalsIgnoreCase("serialVersionUID")) {
                 } else if (excludeFields.contains(fieldName)) {
                 } else
-                    values.put(field.getName().toString(), field.get(item) != null ? field.get(item).toString() : "");
+                    values.put(field.getName(), field.get(item) != null ? field.get(item).toString() : "");
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -427,8 +427,7 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
         if (cursor != null) cursor.moveToFirst();
         long _fieldVal = cursor.getLong(cursor.getColumnIndex("count"));
         db.close();
-        if (_fieldVal == 0) return false;
-        else return true;
+        return _fieldVal != 0;
     }
 
     public long getRecordMaxValue(String fieldName) {
@@ -471,7 +470,7 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
                 for (Field field : o.getClass().getDeclaredFields()) {
                     field.setAccessible(true);   // if you want to modify private fields
                     try {
-                        values.put(field.getName().toString(), field.get(o) != null ? field.get(o).toString() : "");
+                        values.put(field.getName(), field.get(o) != null ? field.get(o).toString() : "");
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -481,10 +480,10 @@ public class Repository<T> extends SQLiteOpenHelper implements IRepository<T> {
             db.setTransactionSuccessful();
         } catch (SecurityException e) {
             e.printStackTrace();
-            Log.i("duti", "error transaction: " + e.toString());
+            Log.i("duti", "error transaction: " + e);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            Log.i("duti", "error transaction: " + e.toString());
+            Log.i("duti", "error transaction: " + e);
         } finally {
             db.endTransaction();
             db.close();

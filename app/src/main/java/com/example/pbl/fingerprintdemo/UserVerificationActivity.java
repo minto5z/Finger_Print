@@ -1,4 +1,4 @@
-package com.example.duti.fingerprintdemo;
+package com.example.pbl.fingerprintdemo;
 
 
 import android.app.PendingIntent;
@@ -11,9 +11,6 @@ import android.graphics.Bitmap;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -34,8 +35,30 @@ import SecuGen.FDxSDKPro.SGFingerInfo;
 import SecuGen.FDxSDKPro.SGFingerPosition;
 import SecuGen.FDxSDKPro.SGImpressionType;
 
-public class UserVerificationActivity  extends AppCompatActivity {
+public class UserVerificationActivity extends AppCompatActivity {
 
+    //This broadcast receiver is necessary to get user permissions to access the attached USB device
+    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.i("duti", "Enter mUsbReceiver.onReceive()");
+            if (ACTION_USB_PERMISSION.equals(action)) {
+                synchronized (this) {
+                    UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                        if (device != null) {
+                            Log.i("duti", "USB BroadcastReceiver VID : " + device.getVendorId() + "\n");
+                            Log.i("duti", "USB BroadcastReceiver PID: " + device.getProductId() + "\n");
+                        } else
+                            Log.i("duti", "mUsbReceiver.onReceive() Device is null");
+                    } else
+                        Log.i("duti", "mUsbReceiver.onReceive() permission denied for device " + device);
+                }
+            }
+        }
+    };
+    Repository<User> repo;
     private Context mContext;
     private PendingIntent mPermissionIntent;
     private JSGFPLib sgfplib;
@@ -46,10 +69,10 @@ public class UserVerificationActivity  extends AppCompatActivity {
     private byte[] storedFingerPrint;
     private byte[] currentFingerPrint;
     private int[] quality;
-
-    Repository<User> repo;
     private ImageView fingerprintImageView;
     private EditText UserId;
+
+    //iv.setBackgroundResource(R.drawable.img);
     private TextView Username, UserAddress, ResultText;
 
     @Override
@@ -78,25 +101,23 @@ public class UserVerificationActivity  extends AppCompatActivity {
         Log.i("duti", "jnisgfplib version: " + sgfplib.Version() + "\n");
     }
 
-    //iv.setBackgroundResource(R.drawable.img);
-
     public void verifyUser(View view) {
-        if(hasAllData()){
+        if (hasAllData()) {
             if (fingerPrint != null) getUserHistory();
             else makeToast("Please Capture Finger print properly");
-        } else  makeToast("Please Enter All Data");
+        } else makeToast("Please Enter All Data");
 
     }
 
-    public void getUserHistory(){
+    public void getUserHistory() {
         int hasData = repo.getCountAgainstField("UserId", UserId.getText().toString());
-        if(hasData>0){
+        if (hasData > 0) {
             byte[] oldImage = repo.getByteForImage("UserId" + "=" + Integer.parseInt(UserId.getText().toString()), "FingerPrint");
             storedFingerPrint = createTemplate1(oldImage);
             currentFingerPrint = createTemplate2(fingerPrint);
             boolean didMatch = matchTemplates(storedFingerPrint, currentFingerPrint);
-            if(didMatch){
-                if(matchingScore(storedFingerPrint, currentFingerPrint)){
+            if (didMatch) {
+                if (matchingScore(storedFingerPrint, currentFingerPrint)) {
                     getUserData();
                     fingerprintImageView.setBackground(ContextCompat.getDrawable(mContext, R.drawable.green_border));
                     ResultText.setText("Finger Print Matched!");
@@ -118,15 +139,14 @@ public class UserVerificationActivity  extends AppCompatActivity {
         } else makeToast("There is No User with this User Id!");
     }
 
-    public void getUserData(){
+    public void getUserData() {
         User[] user = (User[]) repo.get("UserId" + "=" + Integer.parseInt(UserId.getText().toString()), "", User[].class);
         Username.setText(user[0].getUsername());
         UserAddress.setText(user[0].getUserAddress());
     }
 
     public boolean hasAllData() {
-        if ((!TextUtils.isEmpty(Username.getText().toString().trim()))) return true;
-        else return false;
+        return !TextUtils.isEmpty(Username.getText().toString().trim());
     }
 
     // Template stuff
@@ -166,8 +186,7 @@ public class UserVerificationActivity  extends AppCompatActivity {
         boolean result = false;
         int[] score = new int[1];
         if (sgfplib.GetMatchingScore(templateA, templateB, score) == SGFDxErrorCode.SGFDX_ERROR_NONE) {
-            if (score[0] > 100) result = true;
-            else result = false;
+            result = score[0] > 100;
         }
         return result;
     }
@@ -198,7 +217,7 @@ public class UserVerificationActivity  extends AppCompatActivity {
         return bmpGrayScale;
     }
 
-    public void goNext(){
+    public void goNext() {
         Intent intent = new Intent(UserVerificationActivity.this,
                 HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -212,7 +231,7 @@ public class UserVerificationActivity  extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         goNext();
     }
 
@@ -284,27 +303,5 @@ public class UserVerificationActivity  extends AppCompatActivity {
         sgfplib.Close();
         super.onDestroy();
     }
-
-    //This broadcast receiver is necessary to get user permissions to access the attached USB device
-    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
-    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.i("duti", "Enter mUsbReceiver.onReceive()");
-            if (ACTION_USB_PERMISSION.equals(action)) {
-                synchronized (this) {
-                    UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        if (device != null) {
-                            Log.i("duti", "USB BroadcastReceiver VID : " + device.getVendorId() + "\n");
-                            Log.i("duti", "USB BroadcastReceiver PID: " + device.getProductId() + "\n");
-                        } else
-                            Log.i("duti", "mUsbReceiver.onReceive() Device is null");
-                    } else
-                        Log.i("duti", "mUsbReceiver.onReceive() permission denied for device " + device);
-                }
-            }
-        }
-    };
 
 }
